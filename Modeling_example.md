@@ -50,7 +50,7 @@ modelcheck <- function(model, h = 8, w = 10.5) {
 ```
 
 
-OK, now we are ready to load in the data that we will analyze.  You can read in multiple file types into R, but today we will be loading in a .txt file using the read.table() function.  The resulting dataframe will be called the object "data".
+OK, now we are ready to load in the data that we will analyze.  You can read in multiple file types into R, but today we will be loading in a .txt file using the read.table() function.  The resulting dataframe will be called the object "stomdata".  You can get the data file here: [Modeling_example.txt](https://github.com/iamciera/lme4tutorial/tree/gh-pages)
 
 
 ```>
