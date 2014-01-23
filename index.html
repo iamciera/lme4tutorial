@@ -101,8 +101,14 @@ sup {
 <body>
 <h1>Fixed Linear Modeling Using lme4</h1>
 
-
 <p>This is a tutorial made by <a href="http://www.chitwoodlab.org/">Dan Chitwood</a> aimed at people new to R and plan on using the R package <a href="http://cran.r-project.org/web/packages/lme4/index.html">lme4</a> for fixed linear modeling.  Developed for the Tomato Group, which is a group of scientists from <a href="http://malooflab.openwetware.org/">The Maloof Lab</a>, <a href="http://www-plb.ucdavis.edu/labs/sinha/">The Sinha Lab</a>, and <a href="http://www-plb.ucdavis.edu/labs/brady/index.html">The Brady Lab</a>.</p>
+
+<H1>Outline</H1>
+
+<p>
+<li>LOADING IN PACKAGES, DATA FOR ANALYSIS</li>
+<li>DESCRIPTIVE STATISTICS, TRANSFORMATIONS OF OUR TRAITS</li>
+
 
 <p>Tutorial was compiled by the R package <a href="http://yihui.name/knitr/">knitr</a>.</p>
 
@@ -795,31 +801,7 @@ lme4 > 1.0 is required.  If you haven't updated your R for a while you will need
 
 <p><code>r
 library(lme4)
-</code></p>
-
-<pre><code>## Loading required package: lattice
-## Loading required package: Matrix
-</code></pre>
-
-<p><code>r
 library(lmerTest)
-</code></p>
-
-<pre><code>## KernSmooth 2.23 loaded
-## Copyright M. P. Wand 1997-2009
-## 
-## Attaching package: 'lmerTest'
-## 
-## The following object is masked from 'package:lme4':
-## 
-##     lmer
-## 
-## The following object is masked from 'package:stats':
-## 
-##     step
-</code></pre>
-
-<p><code>r
 library(car)
 </code></p>
 
@@ -829,7 +811,13 @@ library(car)
 
 <p><code>r
 stomdata &lt;- read.delim("Modeling_example.txt")
+</code></p>
+
+<p><code>r
 stomdata$trans_abs_stom &lt;- sqrt(stomdata$abs_stom)
+</code></p>
+
+<p><code>r
 head(stomdata)
 </code></p>
 
@@ -1063,8 +1051,7 @@ summary(model1)  # gives p-values for standard lme comparisions (each against th
 <p>summary() compared everything to the reference level (M82 in this case).  You can use the functions in the car package to make other comparisons (ie IL vs IL).</p>
 
 <p><code>r
-library(car)
-linearHypothesis(model1, "ilIL_1.1.2 = ilIL_1.1")  #compare IL_1.1.2 to IL_1.1.  
+linearHypothesis(model1, "ilIL_1.1.2 = ilIL_1.1")  #compare IL_1.1.2 to IL_1.1.  Note that you have to use the factor names as they are listed in the summary table.  Hence 'ilIL_1.1.2...'
 </code></p>
 
 <pre><code>## Linear hypothesis test
@@ -1080,16 +1067,11 @@ linearHypothesis(model1, "ilIL_1.1.2 = ilIL_1.1")  #compare IL_1.1.2 to IL_1.1.
 ## 2  1  0.41       0.52
 </code></pre>
 
-<p>```r</p>
+<p>to test the hypothesis that multiple ILs are equivalent:</p>
 
-<h1>note that you have to use the factor names as they are listed in the</h1>
-
-<h1>summary table.  Hence 'ilIL_1.1.2...'</h1>
-
-<h1>to test the hypothesis that multiple ILs are equivalent:</h1>
-
-<p>linearHypothesis(model1, c("ilIL_1.1.2 - ilIL_1.1", "ilIL_9.3 - ilIL_9.3.1"))
-```</p>
+<p><code>r
+linearHypothesis(model1, c("ilIL_1.1.2 - ilIL_1.1", "ilIL_9.3 - ilIL_9.3.1"))
+</code></p>
 
 <pre><code>## Linear hypothesis test
 ## 
@@ -1105,27 +1087,21 @@ linearHypothesis(model1, "ilIL_1.1.2 = ilIL_1.1")  #compare IL_1.1.2 to IL_1.1.
 ## 2  2  1.27       0.53
 </code></pre>
 
-<p>```r</p>
+<p>there are many other ways to specify the comparisions.  see <code>?linearHypothesis</code> for more details.</p>
 
-<h1>there are many other ways to specify the comparisions.  see</h1>
+<h2>Confidence Intervals</h2>
 
-<h1>?linearHypothesis for more details.</h1>
+<p>We can calculate confidence intervals on our coefficients using functions now available in the lme4 package itself.  Two methods are shown below.</p>
 
-<pre><code>
-
-
-## Confidence Intervals
-We can calculate confidence intervals on our coefficients using functions now available in the lme4 package itself.  Two methods are shown below.
-
-```r
+<p><code>r
 model1.confint &lt;- confint(model1)  #uses profile method.  This is a likelihood based method.  See ?confint.merMod for details.  Takes 138 seconds on 2013 Macbook Pro
-</code></pre>
+</code></p>
 
 <pre><code>## Computing profile confidence intervals ...
 </code></pre>
 
 <p><code>r
-model1.confint.boot &lt;- confint(model1, method = "boot")  #bootstrapped confidence intervals. Take 130 seconds on 2013 Macbook Pro
+model1.confint.boot &lt;- confint(model1, method = "boot")  #bootstrapped confidence intervals. Takes 130 seconds on 2013 Macbook Pro
 </code></p>
 
 <pre><code>## Computing bootstrap confidence intervals ...
@@ -1135,14 +1111,13 @@ model1.confint.boot &lt;- confint(model1, method = "boot")  #bootstrapped confid
 ## Warning: some bootstrap runs failed (1/500)
 </code></pre>
 
-<p>```r</p>
+<h2>compare them</h2>
 
-<h1>compare them</h1>
+<p><code>r
+plot(model1.confint[-1:-5, 1], model1.confint.boot[-1:-5, 1])  #pretty similar in this case.
+</code></p>
 
-<p>plot(model1.confint[-1:-5, 1], model1.confint.boot[-1:-5, 1])  #pretty similar in this case.
-```</p>
-
-<p><img src="figure/unnamed-chunk-2.png" alt="plot of chunk unnamed-chunk-2" /></p>
+<p><img src="figure/unnamed-chunk-6.png" alt="plot of chunk unnamed-chunk-6" /></p>
 
 <h2>TRY IT YOURSELF!!!</h2>
 
@@ -1162,7 +1137,6 @@ model1.confint.boot &lt;- confint(model1, method = "boot")  #bootstrapped confid
 <li>Now, with your minimal model, make sure your residuals are normally distributed.  If not, try to track down which of your samples are not being fit by the model correctly.</li>
 <li> Once you have a model that fits your data well, use it for what it is intended: finding estimated, model-fitted values and for finding significant differences in your dataset.</li>
 </ol>
-
 
 <p>Good luck!  Model fitting is usually much more complicated than presented here, so seek out help on the internet and from experience statisticians!</p>
 </body>
