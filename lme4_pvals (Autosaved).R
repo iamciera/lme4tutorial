@@ -87,7 +87,7 @@ model1.confint <- confint(model1) #uses profile method.  This is a likelihood ba
 model1.confint.boot <- confint(model1,method="boot") #bootstrapped confidence intervals. Takes 130 seconds on 2013 Macbook Pro
 ```
 
-#compare them
+compare them
 
 ```{r}
 plot(model1.confint[-1:-5,1],model1.confint.boot[-1:-5,1]) #pretty similar in this case.

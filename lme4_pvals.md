@@ -9,35 +9,10 @@ lme4 does not report p-values for fixed or random effects.  The package that Dan
 lme4 for model fitting.  lmerTest and car for various hypothesis testing functions.
 lme4 > 1.0 is required.  If you haven't updated your R for a while you will need to.
 
+
 ```r
 library(lme4)
-```
-
-```
-## Loading required package: lattice
-## Loading required package: Matrix
-```
-
-```r
 library(lmerTest)
-```
-
-```
-## KernSmooth 2.23 loaded
-## Copyright M. P. Wand 1997-2009
-## 
-## Attaching package: 'lmerTest'
-## 
-## The following object is masked from 'package:lme4':
-## 
-##     lmer
-## 
-## The following object is masked from 'package:stats':
-## 
-##     step
-```
-
-```r
 library(car)
 ```
 
@@ -46,9 +21,19 @@ library(car)
 ## Read in the data
 Following Dan's example, we will read in the data and transform the abs_stom trait to give it a more normal distribution
 
+
 ```r
 stomdata <- read.delim("Modeling_example.txt")
+```
+
+
+
+```r
 stomdata$trans_abs_stom <- sqrt(stomdata$abs_stom)
+```
+
+
+```r
 head(stomdata)
 ```
 
@@ -292,8 +277,7 @@ summary(model1)  # gives p-values for standard lme comparisions (each against th
 summary() compared everything to the reference level (M82 in this case).  You can use the functions in the car package to make other comparisons (ie IL vs IL).
 
 ```r
-library(car)
-linearHypothesis(model1, "ilIL_1.1.2 = ilIL_1.1")  #compare IL_1.1.2 to IL_1.1.  
+linearHypothesis(model1, "ilIL_1.1.2 = ilIL_1.1")  #compare IL_1.1.2 to IL_1.1.  Note that you have to use the factor names as they are listed in the summary table.  Hence 'ilIL_1.1.2...'
 ```
 
 ```
@@ -310,11 +294,11 @@ linearHypothesis(model1, "ilIL_1.1.2 = ilIL_1.1")  #compare IL_1.1.2 to IL_1.1.
 ## 2  1  0.41       0.52
 ```
 
-```r
-# note that you have to use the factor names as they are listed in the
-# summary table.  Hence 'ilIL_1.1.2...'
 
-# to test the hypothesis that multiple ILs are equivalent:
+to test the hypothesis that multiple ILs are equivalent:
+
+
+```r
 linearHypothesis(model1, c("ilIL_1.1.2 - ilIL_1.1", "ilIL_9.3 - ilIL_9.3.1"))
 ```
 
@@ -333,16 +317,12 @@ linearHypothesis(model1, c("ilIL_1.1.2 - ilIL_1.1", "ilIL_9.3 - ilIL_9.3.1"))
 ## 2  2  1.27       0.53
 ```
 
-```r
-
-# there are many other ways to specify the comparisions.  see
-# ?linearHypothesis for more details.
-```
-
-
+there are many other ways to specify the comparisions.  see ```?linearHypothesis``` for more details.
 
 ## Confidence Intervals
+
 We can calculate confidence intervals on our coefficients using functions now available in the lme4 package itself.  Two methods are shown below.
+
 
 ```r
 model1.confint <- confint(model1)  #uses profile method.  This is a likelihood based method.  See ?confint.merMod for details.  Takes 138 seconds on 2013 Macbook Pro
@@ -353,7 +333,7 @@ model1.confint <- confint(model1)  #uses profile method.  This is a likelihood b
 ```
 
 ```r
-model1.confint.boot <- confint(model1, method = "boot")  #bootstrapped confidence intervals. Take 130 seconds on 2013 Macbook Pro
+model1.confint.boot <- confint(model1, method = "boot")  #bootstrapped confidence intervals. Takes 130 seconds on 2013 Macbook Pro
 ```
 
 ```
@@ -365,14 +345,15 @@ model1.confint.boot <- confint(model1, method = "boot")  #bootstrapped confidenc
 ## Warning: some bootstrap runs failed (1/500)
 ```
 
+
+##compare them
+
+
 ```r
-
-# compare them
-
 plot(model1.confint[-1:-5, 1], model1.confint.boot[-1:-5, 1])  #pretty similar in this case.
 ```
 
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2.png) 
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6.png) 
 
 
 
